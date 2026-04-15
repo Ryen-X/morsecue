@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MorseCue</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: #ff4d4d;">DELETE PRESET?</h2>
+            <p>Are you sure you want to delete this custom emergency preset?</p>
+            <button id="confirmDeleteBtn" class="btn-primary" style="background-color: #ff4d4d; color: #fff;">Delete</button>
+            <button id="cancelDeleteBtn" class="btn-secondary mt-10">Cancel</button>
+        </div>
+    </div>
+
+    <header>
+        <span class="logo">Morse<span class="accent">Cue</span></span>
+    </header>
+
+    <main id="app-container">
+
+        <!-- 1. Morse Page -->
+        <section id="page-morse" class="page active">
+            <h2>Preset Messages</h2>
+            <p class="subtitle">Quick disaster response signals.</p>
+            <div class="custom-input-box card">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <input type="text" id="customInput" maxlength="48" placeholder="Type custom message (max 48 chars)">
+                </div>
+                <button type="button" class="btn-primary mt-10" onclick="addCustomPreset()">Save Custom Preset</button>
+            </div>
+
+            <div id="preset-list" class="preset-container"></div>
+        </section>
+
+        <!-- 2. Medical Passport Page -->
+        <section id="page-medical" class="page">
+            <h2>Medical Passport</h2>
+            <p class="subtitle">Saved securely for first responders.</p>
+            <form id="medForm">
+                <div class="input-group"><label>Full Name</label><input type="text" id="medName" placeholder="John Doe"></div>
+                <div class="input-group"><label>Blood Type</label><input type="text" id="medBlood" placeholder="O+"></div>
+                <div class="input-group"><label>Known Allergies</label><input type="text" id="medAllergies" placeholder="Peanuts, Penicillin..."></div>
+                <div class="input-group"><label>Daily Medications</label><input type="text" id="medMeds" placeholder="Insulin..."></div>
+                <div class="input-group"><label>Emergency Contact</label><input type="tel" id="medContact" placeholder="+1 234 567 8900"></div>
+                <button type="button" class="btn-primary" onclick="saveMedicalData()">Save Passport</button>
+                <div id="med-save-toast" class="toast">Data Saved Successfully</div>
+            </form>
+        </section>
+
+        <!-- 3. QR Code Page -->
+        <section id="page-qr" class="page">
+            <h2>QR Lockscreen</h2>
+            <p class="subtitle">Generate your medical QR code, take a screenshot, paste it on your favorite wallpaper background, and set it as your phone's lockscreen.</p>
+            <button type="button" class="btn-primary mt-10" onclick="generateQR()">Generate My QR Code</button>
+            <div id="qr-container" class="hidden qr-display-area">
+                <div id="qrcode-box" class="qr-box"></div>
+                <p id="qr-name-label" class="qr-text"></p>
+                <p class="qr-instruction">TAKE A SCREENSHOT NOW</p>
+            </div>
+        </section>
+
+        <!-- 4. Decoder Page -->
+        <section id="page-decoder" class="page">
+            <h2>Morse Decoder</h2>
+            <p class="subtitle">Tap the pad closely to translate signals. Please note that only one character a time is decoded. Be sure to give pauses in between to decode morse signals clearly.</p>
+            <div class="decoder-display">
+                <div id="morse-tape">Waiting...</div>
+                <div id="text-tape"></div>
+            </div>
+            <div class="touch-pad-container">
+                <button id="tap-sensor" class="sensor-btn">TAP / HOLD</button>
+                <button id="clear-tape" class="btn-secondary mt-10">Clear Text</button>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="bottom-bar">
+        <button class="nav-item active" data-target="page-morse">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm6 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm6 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm6 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/></svg>
+            <span>Morse</span>
+        </button>
+        <button class="nav-item" data-target="page-medical">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <span>Med</span>
+        </button>
+        <button class="nav-item" data-target="page-qr">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M3 3v8h8V3H3zm6 6H5V5h4v4zm-6 4v8h8v-8H3zm6 6H5v-4h4v4zm4-16v8h8V3h-8zm6 6h-4V5h4v4z"/></svg>
+            <span>QR</span>
+        </button>
+        <button class="nav-item" data-target="page-decoder">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span>Decode</span>
+        </button>
+    </nav>
+
+    <script src="qrcode.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
